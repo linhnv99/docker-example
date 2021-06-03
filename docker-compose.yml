@@ -1,0 +1,25 @@
+version: "3"
+services:
+  myapp:
+    build: #  build image from Dockerfile
+      context: . #  path to Dockerfile
+      dockerfile: Dockerfile
+    container_name: my_app_container
+    ports:
+      - 9091:9090
+    depends_on:
+      - mysql-service
+  mysql-service:
+    image: mysql
+    container_name: mysql_contatiner
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root1234 # set password for root
+      - MYSQL_DATABASE=user_manager # default database when the container is started
+    ports:
+      - 3307:3306
+    volumes:
+      - backup:/var/lib/mysql
+      - ./sql/user_manager.sql:/docker-entrypoint-initdb.d/init.sql # mount sql file to docker...initdb.d(default init)
+volumes:
+  backup:
